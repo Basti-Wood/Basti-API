@@ -1,0 +1,26 @@
+{
+	"Tuubaa":
+	{
+		"requests": [
+				{
+					"username": "User1",
+					"media": "song_name_or_url_1"
+				},
+				{
+					"username": "User2",
+					"media": "song_name_or_url_2"
+				},
+				{
+					"username": "User1",
+					"media": "song_name_or_url_3"
+				}
+			]
+	},
+	"Basti":
+	{
+		"requests":
+			[
+
+			]
+	}
+}
