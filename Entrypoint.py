@@ -42,7 +42,6 @@ async def get_media_route(owner: str):
 		return {"message": "No media found for this owner."}
       
 @app.post("/setmedia/{owner}/{user}/{media}")
-@app.get("/setmedia/{owner}/{user}/{media}")
 async def set_media_route(owner: str, user: str, media: str):
 	store_media(owner, user, media)
 	return {"message": "Media set successfully."}
