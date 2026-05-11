@@ -1,3 +1,5 @@
 .env
 envs/LLM.env
 main.py
+envs/AI.env
+/envs

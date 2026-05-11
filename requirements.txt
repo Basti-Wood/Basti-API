@@ -1,7 +1,7 @@
 fastapi
 uvicorn
 python-dotenv
-transformers
-torch
-accelerate
-bitsandbytes
+huggingface_hub
+# Install llama-cpp-python with CUDA support for GTX 1060:
+# CMAKE_ARGS="-DGGML_CUDA=on" pip install llama-cpp-python
+llama-cpp-python

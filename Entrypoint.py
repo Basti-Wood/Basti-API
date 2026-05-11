@@ -1,4 +1,5 @@
 import os
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, Depends, HTTPException, Header
 from Reactions.gifpicker import get_gif
 from Media_share.mediashare import (
@@ -6,26 +7,31 @@ from Media_share.mediashare import (
 	set_media as store_media,
 	get_all_media as fetch_all_media,
 )
-from dotenv import load_dotenv
-from LLM.LLM import load_model, generate_text, unload_model, DEFAULT_SYSTEM_PROMPT
+from dotenv import load_dotenv, dotenv_values
+from LLM.LLM import load_model, generate_text, unload_model, clear_memory, DEFAULT_SYSTEM_PROMPT
 from typing import Optional
 
-# Specify the path to the .env file
-load_dotenv(dotenv_path=os.path.join('env', '.env'))
-
-VALID_API_KEYS = os.environ.values()
+# Load env files — API.env for access keys, AI.env for external API keys
+VALID_API_KEYS = set(dotenv_values(os.path.join('envs', 'API.env')).values())
+load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), 'envs', 'AI.env'))
 
 # Dependency to validate API key
 def validate_api_key(x_api_key: str = Header(...)):
     if x_api_key not in VALID_API_KEYS:
         raise HTTPException(status_code=401, detail="Invalid API Key")
 
-app = FastAPI(dependencies=[Depends(validate_api_key)])
-
 # Global model state — loaded/unloaded manually via routes
 _model = None
 _tokenizer = None
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    yield
+    # Runs on shutdown — unload model if still loaded
+    if _model is not None:
+        unload_model(_model, _tokenizer)
+
+app = FastAPI(dependencies=[Depends(validate_api_key)], lifespan=lifespan)
 
 # Basic routes
 @app.get("/", dependencies=[Depends(validate_api_key)])
@@ -76,23 +82,30 @@ async def load_model_route():
 	global _model, _tokenizer
 	if _model is not None:
 		return {"message": "Model is already loaded."}
-	model_path = "meta-llama/Meta-Llama-3.1-8B-Instruct"
+	model_path = "bartowski/Llama-3.2-3B-Instruct-GGUF"
 	_model, _tokenizer = load_model(model_path)
 	return {"message": "Model loaded successfully."}
 
 @app.get("/generatetext")
-async def generate_text_route(input_text: str, system_prompt: Optional[str] = None):
+async def generate_text_route(input_text: str, user: str = "default", system_prompt: Optional[str] = None):
 	if _model is None:
 		raise HTTPException(status_code=503, detail="Model is not loaded. Call /loadmodel first.")
-	generated_text = generate_text(_model, _tokenizer, input_text, system_prompt=system_prompt)
+	generated_text = generate_text(_model, _tokenizer, input_text, system_prompt=system_prompt, user=user)
 	return {"generated_text": generated_text}
+
+@app.post("/clearmemory")
+async def clear_memory_route(user: Optional[str] = None):
+	clear_memory(user)
+	if user:
+		return {"message": f"Memory cleared for user '{user}'."}
+	return {"message": "All memory cleared."}
 
 @app.post("/unloadmodel")
 async def unload_model_route():
 	global _model, _tokenizer
 	if _model is None:
 		return {"message": "Model is not loaded."}
-	unload_model(_model)
+	unload_model(_model, _tokenizer)
 	_model = None
 	_tokenizer = None
 	return {"message": "Model unloaded successfully."}
