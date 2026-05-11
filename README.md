@@ -21,34 +21,34 @@ Dabei verändere die Host IP und den Port zu dem gewünschten wert.
 
 ## Basic
 
-``IP/Heath`` zeigt den aktuellen stand der API
+- ``IP/Heath`` zeigt den aktuellen stand der API
 
-``/`` ist der basic einstiegspunkt
+- ``/`` ist der basic einstiegspunkt
 
 # Reactions
 
-``/reactions/{chategory}`` gibt ein Gif wieder, basierend auf der Chategory.
+- ``/reactions/{chategory}`` gibt ein Gif wieder, basierend auf der Chategory.
 
-- hug
-- pat
-- slap
-- cuddle
-- cheer
-- poke
-- *Mehr die hnzugefügt werden können*
+	- hug
+	- pat
+	- slap
+	- cuddle
+	- cheer
+	- poke
+	- *Mehr die hnzugefügt werden können*
 
 # Mediashare
 
-``/getmedia/{owner}`` nimmt sich den ersten eintrag aus der liste eines Users, gibt diesen wieder und löscht diesen aus der liste.
+- ``/getmedia/{owner}`` nimmt sich den ersten eintrag aus der liste eines Users, gibt diesen wieder und löscht diesen aus der liste.
 
-``/setmedia/{owner}/{user}/{Media}`` Setzt Media für einen besitzer der liste von einem Benutzer.
+- ``/setmedia/{owner}/{user}/{Media}`` Setzt Media für einen besitzer der liste von einem Benutzer.
 
-``/getallmedia/{owener}`` Bekommt alle Medien, die ein besitzer hat, ohne diese zu löschen.
+- ``/getallmedia/{owener}`` Bekommt alle Medien, die ein besitzer hat, ohne diese zu löschen.
 
 # LLM
 
-``/loadmodel`` Läd das LLama model "meta-llama/Meta-Llama-3.1-8B-Instruct"
+- ``/loadmodel`` Läd das LLama model "meta-llama/Meta-Llama-3.1-8B-Instruct"
 
-``/generatetext/{InputText}/{Systemprompt}`` generiert einen text mit dem input text und OPTIONAL mit dem kontext des systemprompts.
+- ``/generatetext/{InputText}/{Systemprompt}`` generiert einen text mit dem input text und OPTIONAL mit dem kontext des systemprompts.
 
-``/unloadmodel`` schließt die LLM wieder (WICHTIG für Recourcen management)
+- ``/unloadmodel`` schließt die LLM wieder (WICHTIG für Recourcen management)
