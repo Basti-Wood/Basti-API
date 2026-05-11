@@ -1,14 +1,21 @@
 import json
+from pathlib import Path
+
+MEDIA_FILE = Path(__file__).resolve().parent / "media.json"
 
 
 def get_media(owner):
-    with open("Requests.json", "r") as f:
-        data = json.load(f)
+    try:
+        with open(MEDIA_FILE, "r") as f:
+            data = json.load(f)
+    except FileNotFoundError:
+        return None
+
     requests = data.get(owner, {}).get("requests", [])
     if requests:
         ret = requests.pop(0)
-        with open("Requests.json", "w") as f:
-            data["requests"] = requests
+        with open(MEDIA_FILE, "w") as f:
+            data.setdefault(owner, {})["requests"] = requests
             json.dump(data, f, indent=4)
         return ret
     else:
@@ -17,7 +24,7 @@ def get_media(owner):
 def set_media(owner, user, media):
     # Load the existing data from the JSON file
     try:
-        with open("media.json", "r") as f:
+        with open(MEDIA_FILE, "r") as f:
             data = json.load(f)
     except FileNotFoundError:
         data = {}
@@ -29,12 +36,15 @@ def set_media(owner, user, media):
         "username": user,
         "media": media
     })
-    with open("media.json", "w") as f:
+    with open(MEDIA_FILE, "w") as f:
         json.dump(data, f, indent=4)
 
 
 def get_all_media(owner):
-	with open("media.json", "r") as f:
-		data = json.load(f)
-	return data.get(owner, {}).get("requests", [])
+    try:
+        with open(MEDIA_FILE, "r") as f:
+            data = json.load(f)
+    except FileNotFoundError:
+        return []
+    return data.get(owner, {}).get("requests", [])
 
