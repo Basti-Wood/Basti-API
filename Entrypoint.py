@@ -7,6 +7,8 @@ from Media_share.mediashare import (
 	get_all_media as fetch_all_media,
 )
 from dotenv import load_dotenv
+from LLM.LLM import load_model, generate_text, unload_model, DEFAULT_SYSTEM_PROMPT
+from typing import Optional
 
 # Load environment variables from .env file
 load_dotenv()
@@ -20,6 +22,12 @@ def validate_api_key(x_api_key: str = Header(...)):
 
 app = FastAPI(dependencies=[Depends(validate_api_key)])
 
+# Global model state — loaded/unloaded manually via routes
+_model = None
+_tokenizer = None
+
+
+# Basic routes
 @app.get("/", dependencies=[Depends(validate_api_key)])
 async def read_root():
     return {"message": "Welcome to your custom FastAPI!"}
@@ -28,10 +36,17 @@ async def read_root():
 async def health():
     return {"status": "ok"}
 
+
+# Reaction routes
 @app.get("/reaction/{category}")
 async def get_reaction(category: str):
 	gif_url = get_gif('Reactions/gifs.json', category)
 	return {"gif_url": gif_url}
+
+
+
+
+# Media sharing routes
 
 @app.get("/getmedia/{owner}")
 async def get_media_route(owner: str):
@@ -53,6 +68,38 @@ async def get_all_media_route(owner: str):
 		return {"media": response}
 	else:
 		return {"message": "No media found for this owner."}
+	
+
+
+
+#LLM integration
+@app.post("/loadmodel")
+async def load_model_route():
+	global _model, _tokenizer
+	if _model is not None:
+		return {"message": "Model is already loaded."}
+	model_path = "meta-llama/Meta-Llama-3.1-8B-Instruct"
+	_model, _tokenizer = load_model(model_path)
+	return {"message": "Model loaded successfully."}
+
+@app.get("/generatetext")
+async def generate_text_route(input_text: str, system_prompt: Optional[str] = None):
+	if _model is None:
+		raise HTTPException(status_code=503, detail="Model is not loaded. Call /loadmodel first.")
+	generated_text = generate_text(_model, _tokenizer, input_text, system_prompt=system_prompt)
+	return {"generated_text": generated_text}
+
+@app.post("/unloadmodel")
+async def unload_model_route():
+	global _model, _tokenizer
+	if _model is None:
+		return {"message": "Model is not loaded."}
+	unload_model(_model)
+	_model = None
+	_tokenizer = None
+	return {"message": "Model unloaded successfully."}
+
+
 
 if __name__ == "__main__":
     import uvicorn
