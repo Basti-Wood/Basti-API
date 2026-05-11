@@ -10,8 +10,8 @@ from dotenv import load_dotenv
 from LLM.LLM import load_model, generate_text, unload_model, DEFAULT_SYSTEM_PROMPT
 from typing import Optional
 
-# Load environment variables from .env file
-load_dotenv()
+# Specify the path to the .env file
+load_dotenv(dotenv_path=os.path.join('env', '.env'))
 
 VALID_API_KEYS = os.environ.values()
 
