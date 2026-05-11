@@ -44,8 +44,6 @@ async def get_reaction(category: str):
 	return {"gif_url": gif_url}
 
 
-
-
 # Media sharing routes
 
 @app.get("/getmedia/{owner}")
@@ -98,9 +96,3 @@ async def unload_model_route():
 	_model = None
 	_tokenizer = None
 	return {"message": "Model unloaded successfully."}
-
-
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8000)
