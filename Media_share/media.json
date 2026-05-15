@@ -1,8 +1,186 @@
 {
-    "Tuubaa": {
-        "requests": []
-    },
-    "Basti": {
-        "requests": []
-    }
+        "pat": [
+        "https://cdn.otakugifs.xyz/gifs/pat/b827c8687dcd59e0.gif",
+        "https://cdn.otakugifs.xyz/gifs/pat/7pUEkSbx3r.gif",
+        "https://cdn.otakugifs.xyz/gifs/pat/5cb16aa0e7fa5891.gif",
+        "https://cdn.otakugifs.xyz/gifs/pat/f738473258ae31f5.gif",
+        "https://cdn.otakugifs.xyz/gifs/pat/rzn5K09230.gif",
+        "https://cdn.otakugifs.xyz/gifs/pat/5c90b301ee64c14a.gif",
+        "https://cdn.otakugifs.xyz/gifs/pat/19278030a3174e88.gif",
+        "https://cdn.otakugifs.xyz/gifs/pat/519797f8714e4a5e.gif",
+        "https://cdn.otakugifs.xyz/gifs/pat/c88e6bcc70232d91.gif",
+        "https://cdn.otakugifs.xyz/gifs/pat/0d868f84caad8696.gif"
+    ],
+    "cuddle": [
+        "https://cdn.otakugifs.xyz/gifs/cuddle/ba935ce7bc897ed0.gif",
+        "https://cdn.otakugifs.xyz/gifs/cuddle/57ed752519bfce5d.gif",
+        "https://cdn.otakugifs.xyz/gifs/cuddle/6fae3cac4f0a3555.gif",
+        "https://cdn.otakugifs.xyz/gifs/cuddle/88561f7a088650b8.gif",
+        "https://cdn.otakugifs.xyz/gifs/cuddle/3795e8b0f58c35ab.gif",
+        "https://cdn.otakugifs.xyz/gifs/cuddle/a2121bf74080edcb.gif",
+        "https://cdn.otakugifs.xyz/gifs/cuddle/872a8e26d9ec4790.gif",
+        "https://cdn.otakugifs.xyz/gifs/cuddle/16abe1ffaa95f56f.gif",
+        "https://cdn.otakugifs.xyz/gifs/cuddle/ebc3e23450a4dcba.gif",
+        "https://cdn.otakugifs.xyz/gifs/cuddle/66541b358beb59cf.gif"
+    ],
+    "hug": [
+        "https://cdn.otakugifs.xyz/gifs/hug/608e7397da18e9c7.gif",
+        "https://cdn.otakugifs.xyz/gifs/hug/bf06f94d20fb33f3.gif",
+        "https://cdn.otakugifs.xyz/gifs/hug/9c04237bf0e04e75.gif",
+        "https://cdn.otakugifs.xyz/gifs/hug/8a10a971e9f5a514.gif",
+        "https://cdn.otakugifs.xyz/gifs/hug/37876b8d388310f3.gif",
+        "https://cdn.otakugifs.xyz/gifs/hug/8d3df8b9d154b613.gif",
+        "https://cdn.otakugifs.xyz/gifs/hug/bc55980479c9473d.gif",
+        "https://cdn.otakugifs.xyz/gifs/hug/825610ec7fdc1e8c.gif",
+        "https://cdn.otakugifs.xyz/gifs/hug/E0l7A2yayA.gif",
+        "https://cdn.otakugifs.xyz/gifs/hug/7a2404aa8760a665.gif"
+    ],
+    "happy": [
+        "https://cdn.otakugifs.xyz/gifs/happy/38a3deeedde47184.gif",
+        "https://cdn.otakugifs.xyz/gifs/happy/vhplowmpdJ.gif",
+        "https://cdn.otakugifs.xyz/gifs/happy/k62NxdMQEv.gif",
+        "https://cdn.otakugifs.xyz/gifs/happy/ribCIUm66a.gif",
+        "https://cdn.otakugifs.xyz/gifs/happy/nWf3Ss0eWU.gif",
+        "https://cdn.otakugifs.xyz/gifs/happy/b24b78867b086f70.gif",
+        "https://cdn.otakugifs.xyz/gifs/happy/Tkyfzl77pR.gif",
+        "https://cdn.otakugifs.xyz/gifs/happy/733a0ac9fcf79b9d.gif",
+        "https://cdn.otakugifs.xyz/gifs/happy/W7tz474WLB.gif",
+        "https://cdn.otakugifs.xyz/gifs/happy/2870bb4a1b4dbf7a.gif"
+    ],
+    "blush": [
+        "https://cdn.otakugifs.xyz/gifs/blush/6d7509218875b7e4.gif",
+        "https://cdn.otakugifs.xyz/gifs/blush/69b4317ed01aee83.gif",
+        "https://cdn.otakugifs.xyz/gifs/blush/98cbc5bef3590dcf.gif",
+        "https://cdn.otakugifs.xyz/gifs/blush/b57021de2fa39cd0.gif",
+        "https://cdn.otakugifs.xyz/gifs/blush/2217d279461e3b06.gif",
+        "https://cdn.otakugifs.xyz/gifs/blush/RTpa96VrJa.gif",
+        "https://cdn.otakugifs.xyz/gifs/blush/265ae234d455ab7d.gif",
+        "https://cdn.otakugifs.xyz/gifs/blush/z45U3NHpft2A.gif",
+        "https://cdn.otakugifs.xyz/gifs/blush/Q3S8e4fP9qVA.gif",
+        "https://cdn.otakugifs.xyz/gifs/blush/rh8KXQBMWBka.gif"
+    ],
+    "cheers": [
+        "https://cdn.otakugifs.xyz/gifs/cheers/03d063c6eae43782.gif",
+        "https://cdn.otakugifs.xyz/gifs/cheers/41b4954d25a2aa93.gif",
+        "https://cdn.otakugifs.xyz/gifs/cheers/64bb946e4e8e6d1e.gif",
+        "https://cdn.otakugifs.xyz/gifs/cheers/c05873ab3b4d795d.gif",
+        "https://cdn.otakugifs.xyz/gifs/cheers/c719a134dd76a24d.gif"
+    ],
+    "cool": [
+        "https://cdn.otakugifs.xyz/gifs/cool/e21901cb5c2cc452.gif",
+        "https://cdn.otakugifs.xyz/gifs/cool/d2776011d23a58d9.gif",
+        "https://cdn.otakugifs.xyz/gifs/cool/b2aa83618c310ea6.gif",
+        "https://cdn.otakugifs.xyz/gifs/cool/524083d4d4ef102b.gif"
+    ],
+    "cry": [
+        "https://cdn.otakugifs.xyz/gifs/cry/3fce38df429d0e1c.gif",
+        "https://cdn.otakugifs.xyz/gifs/cry/06e47a82a81c1b67.gif",
+        "https://cdn.otakugifs.xyz/gifs/cry/d184ed7f6ef27c6e.gif",
+        "https://cdn.otakugifs.xyz/gifs/cry/e6ca0733d0d1cb44.gif",
+        "https://cdn.otakugifs.xyz/gifs/cry/6795785dc22c9d94.gif"
+    ],
+    "facepalm": [
+        "https://cdn.otakugifs.xyz/gifs/facepalm/5dccdd762b4b3eb3.gif",
+        "https://cdn.otakugifs.xyz/gifs/facepalm/5d36ebedb3c7058e.gif",
+        "https://cdn.otakugifs.xyz/gifs/facepalm/27e21a316754ab79.gif",
+        "https://cdn.otakugifs.xyz/gifs/facepalm/de2fe17a75556e04.gif",
+        "https://cdn.otakugifs.xyz/gifs/facepalm/39743fdd41329735.gif"
+    ],
+    "laugh": [
+        "https://cdn.otakugifs.xyz/gifs/laugh/y7aOXjlPRL.gif",
+        "https://cdn.otakugifs.xyz/gifs/laugh/9134f9fb15d03195.gif",
+        "https://cdn.otakugifs.xyz/gifs/laugh/80973fc3681ad813.gif",
+        "https://cdn.otakugifs.xyz/gifs/laugh/tFRZ88Dt24b5.gif",
+        "https://cdn.otakugifs.xyz/gifs/laugh/mXuY67avPUeW.gif"
+    ],
+    "love": [
+        "https://cdn.otakugifs.xyz/gifs/love/f2ebf1ab54d7af7a.gif",
+        "https://cdn.otakugifs.xyz/gifs/love/4fa4d3db1f354994.gif",
+        "https://cdn.otakugifs.xyz/gifs/love/3f68669bea688d61.gif",
+        "https://cdn.otakugifs.xyz/gifs/love/953e43f154b3d1ec.gif",
+        "https://cdn.otakugifs.xyz/gifs/love/9d47a61cc07ae787.gif"
+    ],
+    "mad": [
+        "https://cdn.otakugifs.xyz/gifs/mad/27faa1158ff1cba5.gif",
+        "https://cdn.otakugifs.xyz/gifs/mad/ad93180675107851.gif",
+        "https://cdn.otakugifs.xyz/gifs/mad/8c094342a17330fb.gif",
+        "https://cdn.otakugifs.xyz/gifs/mad/cdeEfW3511.gif",
+        "https://cdn.otakugifs.xyz/gifs/mad/a3d30cee15aa0d4c.gif"
+    ],
+    "nervous": [
+        "https://cdn.otakugifs.xyz/gifs/nervous/f7403894192b19f7.gif",
+        "https://cdn.otakugifs.xyz/gifs/nervous/b11dffe19a817e8e.gif",
+        "https://cdn.otakugifs.xyz/gifs/nervous/D7XpbsaEgE.gif",
+        "https://cdn.otakugifs.xyz/gifs/nervous/9f1b319ec5e45af8.gif",
+        "https://cdn.otakugifs.xyz/gifs/nervous/6e67ff9c5a85d5db.gif"
+    ],
+    "no": [
+        "https://cdn.otakugifs.xyz/gifs/no/da8139a0f0761722.gif",
+        "https://cdn.otakugifs.xyz/gifs/no/119a49e8c1ddc292.gif",
+        "https://cdn.otakugifs.xyz/gifs/no/qhOOLFgZyb.gif",
+        "https://cdn.otakugifs.xyz/gifs/no/61fcf29d108dd009.gif",
+        "https://cdn.otakugifs.xyz/gifs/no/kgMBB4ELct.gif"
+    ],
+    "poke": [
+        "https://cdn.otakugifs.xyz/gifs/poke/db2fdca3996922ad.gif",
+        "https://cdn.otakugifs.xyz/gifs/poke/2a313f780dd02e9c.gif",
+        "https://cdn.otakugifs.xyz/gifs/poke/6a4d4d0a7a39bfb9.gif",
+        "https://cdn.otakugifs.xyz/gifs/poke/3U7KzbHzpt.gif",
+        "https://cdn.otakugifs.xyz/gifs/poke/cc64b741a94d53cf.gif",
+        "https://c.tenor.com/xEULDAPjA0YAAAAd/tenor.gif",
+        "https://tenor.com/de/view/nana-osaki-nana-nana-anime-gif-7432168892065809516",
+        "https://c.tenor.com/ZyReOuJKhGwAAAAd/tenor.gif"
+
+    ],
+    "sad": [
+        "https://cdn.otakugifs.xyz/gifs/sad/dfc703eac9d961f6.gif",
+        "https://cdn.otakugifs.xyz/gifs/sad/ec27498de0911184.gif",
+        "https://cdn.otakugifs.xyz/gifs/sad/b2bff4571db8bc48.gif",
+        "https://cdn.otakugifs.xyz/gifs/sad/74da5bbeb48d14e2.gif",
+        "https://cdn.otakugifs.xyz/gifs/sad/a0cfe9c9354c1c28.gif"
+    ],
+    "scared": [
+        "https://cdn.otakugifs.xyz/gifs/scared/6983a1b1e53481ce.gif",
+        "https://cdn.otakugifs.xyz/gifs/scared/3a3ea4f0dca616da.gif",
+        "https://cdn.otakugifs.xyz/gifs/scared/mKqt8jaz6H.gif",
+        "https://cdn.otakugifs.xyz/gifs/scared/513e88ecb4c54d8f.gif",
+        "https://cdn.otakugifs.xyz/gifs/scared/7b96d1e27c8b7ed6.gif"
+    ],
+    "shy": [
+        "https://cdn.otakugifs.xyz/gifs/shy/7eseu9gQEG.gif",
+        "https://cdn.otakugifs.xyz/gifs/shy/12b363f6f87fa511.gif",
+        "https://cdn.otakugifs.xyz/gifs/shy/a3c6dfa243bdef05.gif",
+        "https://cdn.otakugifs.xyz/gifs/shy/VUjPes6iph.gif",
+        "https://cdn.otakugifs.xyz/gifs/shy/e2434538a2d6e63d.gif"
+    ],
+    "slap": [
+        "https://cdn.otakugifs.xyz/gifs/slap/1abaf6b890032911.gif",
+        "https://cdn.otakugifs.xyz/gifs/slap/iycRe43Ygg.gif",
+        "https://cdn.otakugifs.xyz/gifs/slap/bb9bdfcbd5c606f7.gif",
+        "https://cdn.otakugifs.xyz/gifs/slap/7882244dc2ba254c.gif",
+        "https://cdn.otakugifs.xyz/gifs/slap/YZVDKmmik2.gif"
+    ],
+    "sleep": [
+        "https://cdn.otakugifs.xyz/gifs/sleep/236211b87b696eb7.gif",
+        "https://cdn.otakugifs.xyz/gifs/sleep/ffe1ede11feeb780.gif",
+        "https://cdn.otakugifs.xyz/gifs/sleep/3266614e188bcdd5.gif",
+        "https://cdn.otakugifs.xyz/gifs/sleep/gpTcoQYhik.gif",
+        "https://cdn.otakugifs.xyz/gifs/sleep/FYpMxB8AYG.gif"
+    ],
+    "smug": [
+        "https://cdn.otakugifs.xyz/gifs/smug/8feb790323611f57.gif",
+        "https://cdn.otakugifs.xyz/gifs/smug/4KqRNenesm.gif",
+        "https://cdn.otakugifs.xyz/gifs/smug/NRVm2rHkM0.gif",
+        "https://cdn.otakugifs.xyz/gifs/smug/da643bc002bd7b87.gif",
+        "https://cdn.otakugifs.xyz/gifs/smug/d04e42e8ffcb4124.gif"
+    ],
+    "stare": [
+        "https://cdn.otakugifs.xyz/gifs/stare/fe33f1e6f13ae0d7.gif",
+        "https://cdn.otakugifs.xyz/gifs/stare/74eaa20bcda2fa0f.gif",
+        "https://cdn.otakugifs.xyz/gifs/stare/UpeOsd0OjI.gif",
+        "https://cdn.otakugifs.xyz/gifs/stare/ab52b3e4058cb2cc.gif",
+        "https://cdn.otakugifs.xyz/gifs/stare/aMYP3z4fmG.gif",
+        "https://c.tenor.com/dOjvgm4hJjoAAAAC/tenor.gif",
+        "https://cdn.discordapp.com/attachments/1243581154884321333/1420852733644378223/intense_stare.gif?ex=6a08c3b9&is=6a077239&hm=16c33f67469e00213ad2bbfb5297076080be5f24a77df558a9796051bfda513e&"
+    ]
 }
