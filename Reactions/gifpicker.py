@@ -1,8 +1,13 @@
 import json
 import random
+import os
 
 
 def get_gif(json_file, category):
+		# Convert to absolute path if relative
+		if not os.path.isabs(json_file):
+			json_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), json_file)
+		
 		with open(json_file, 'r') as f:
 			gifs = json.load(f)
 		
