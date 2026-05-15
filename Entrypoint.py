@@ -1,14 +1,18 @@
 import os
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, Depends, HTTPException, Header
+from fastapi import FastAPI, Depends, HTTPException, Header, WebSocket, WebSocketDisconnect
 from Reactions.gifpicker import get_gif
 from Media_share.mediashare import (
 	get_media as fetch_media,
 	set_media as store_media,
 	get_all_media as fetch_all_media,
+	remove_media as remove_media
 )
 from dotenv import load_dotenv, dotenv_values
-from LLM.LLM import load_model, generate_text, unload_model, clear_memory, DEFAULT_SYSTEM_PROMPT
+try:
+	from LLM.LLM import load_model, generate_text, unload_model, clear_memory, DEFAULT_SYSTEM_PROMPT
+except ImportError:
+	print("LLM module not found. LLM-related routes will not work.")
 from typing import Optional
 
 # Load env files — API.env for access keys, AI.env for external API keys
@@ -60,7 +64,7 @@ async def get_media_route(owner: str):
 	else:
 		return {"message": "No media found for this owner."}
       
-@app.post("/setmedia/{owner}/{user}/{media}")
+@app.post("/setmedia/{owner}/{user}/{media:path}")
 async def set_media_route(owner: str, user: str, media: str):
 	store_media(owner, user, media)
 	return {"message": "Media set successfully."}
@@ -73,8 +77,31 @@ async def get_all_media_route(owner: str):
 	else:
 		return {"message": "No media found for this owner."}
 	
+@app.post("/removemedia/{owner}/{index}")
+async def remove_media_route(owner: str, index: int):
+	success = remove_media(owner, index)
+	if success:
+		return {"message": "Media removed successfully."}
+	else:
+		return {"message": "Failed to remove media. Check the owner and index."}
 
+# WebSocket route for getallmedia
+@app.websocket("/ws/getallmedia/{owner}")
+async def websocket_get_all_media(websocket: WebSocket, owner: str):
+    await websocket.accept()
+    try:
+        while True:
+            # Wait for a message from the client (optional, can be removed if not needed)
+            await websocket.receive_text()
 
+            # Fetch all media for the owner
+            response = fetch_all_media(owner)
+            if response:
+                await websocket.send_json({"media": response})
+            else:
+                await websocket.send_json({"message": "No media found for this owner."})
+    except WebSocketDisconnect:
+        print(f"WebSocket disconnected for owner: {owner}")
 
 #LLM integration
 @app.post("/loadmodel")
