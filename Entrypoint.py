@@ -53,8 +53,10 @@ async def get_reaction(category: str):
 	gif_url = get_gif('Reactions/gifs.json', category)
 	return {"gif_url": gif_url}
 
-
-# Media sharing routes
+@app.post("/setreaction/{category}/{gif_url:path}")
+async def set_reaction(category: str, gif_url: str):
+	set_gif('Reactions/gifs.json', category, gif_url)
+	return {"message": "GIF added successfully."}
 
 @app.get("/getmedia/{owner}")
 async def get_media_route(owner: str):
@@ -136,3 +138,5 @@ async def unload_model_route():
 	_model = None
 	_tokenizer = None
 	return {"message": "Model unloaded successfully."}
+
+

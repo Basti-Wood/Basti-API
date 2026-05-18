@@ -20,3 +20,20 @@ def get_gif(json_file, category):
 			raise ValueError(f"No GIFs available for category '{category}'")
 		
 		return random.choice(gifs[category])
+
+def set_gif(json_file, category, gif_url):
+		# Convert to absolute path if relative
+		if not os.path.isabs(json_file):
+			json_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), json_file)
+		
+		with open(json_file, 'r') as f:
+			gifs = json.load(f)
+		
+		# Check if category exists, if not create it
+		if category not in gifs:
+			gifs[category] = []
+		
+		gifs[category].append(gif_url)
+		
+		with open(json_file, 'w') as f:
+			json.dump(gifs, f, indent=4)
