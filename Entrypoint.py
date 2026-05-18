@@ -1,6 +1,6 @@
 import os
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, Depends, HTTPException, Header, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, Depends, HTTPException, Header, WebSocket, WebSocketDisconnect, Request
 from Reactions.gifpicker import get_gif, set_gif
 from Media_share.mediashare import (
 	get_media as fetch_media,
@@ -53,10 +53,16 @@ async def get_reaction(category: str):
 	gif_url = get_gif('Reactions/gifs.json', category)
 	return {"url": gif_url}
 
-@app.post("/setreaction/{category}/{gif_url:path}")
-async def set_reaction(category: str, gif_url: str):
-	set_gif('Reactions/gifs.json', category, gif_url)
-	return {"message": "GIF added successfully."}
+@app.post("/setreaction/{category}")
+async def set_reaction(category: str, request: Request):
+	try:
+		body = await request.json()
+	except:
+		return {"error": "Invalid JSON body"}, 400
+	if "url" not in body:
+		return {"error": "Missing 'url' in request body"}, 400
+	set_gif('Reactions/gifs.json', category, body["url"])
+	return {"message": "GIF set successfully."}
 
 @app.get("/getmedia/{owner}")
 async def get_media_route(owner: str):
