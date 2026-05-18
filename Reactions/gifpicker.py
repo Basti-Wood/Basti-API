@@ -15,11 +15,11 @@ def get_gif(json_file, category):
 	if category not in gifs:
 		raise ValueError(f"Category '{category}' not found in gifs.json")
 	
-	# Check if gif URL is empty
+	# Check if category has any gifs
 	if not gifs[category]:
-		raise ValueError(f"No GIF available for category '{category}'")
+		raise ValueError(f"No GIFs available for category '{category}'")
 	
-	return gifs[category]
+	return random.choice(gifs[category])
 
 def set_gif(json_file, category, gif_url):
 	# Convert to absolute path if relative
@@ -35,8 +35,16 @@ def set_gif(json_file, category, gif_url):
 		if not isinstance(gifs, dict):
 			gifs = {}
 		
-		# Update only the specific category
-		gifs[category] = gif_url
+		# Create category array if it doesn't exist
+		if category not in gifs:
+			gifs[category] = []
+		
+		# Ensure category value is a list
+		if not isinstance(gifs[category], list):
+			gifs[category] = []
+		
+		# Append the new GIF URL
+		gifs[category].append(gif_url)
 		
 		# Write back the complete dictionary
 		with open(json_file, 'w') as f:
