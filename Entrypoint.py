@@ -51,7 +51,7 @@ async def health():
 @app.get("/reaction/{category}")
 async def get_reaction(category: str):
 	gif_url = get_gif('Reactions/gifs.json', category)
-	return {"gif_url": gif_url}
+	return {"url": gif_url}
 
 @app.post("/setreaction/{category}/{gif_url:path}")
 async def set_reaction(category: str, gif_url: str):
