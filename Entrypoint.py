@@ -1,7 +1,7 @@
 import os
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Depends, HTTPException, Header, WebSocket, WebSocketDisconnect
-from Reactions.gifpicker import get_gif
+from Reactions.gifpicker import get_gif, set_gif
 from Media_share.mediashare import (
 	get_media as fetch_media,
 	set_media as store_media,
