@@ -9,6 +9,7 @@ from Media_share.mediashare import (
 	remove_media as remove_media
 )
 from dotenv import load_dotenv, dotenv_values
+from collections import defaultdict
 try:
 	from LLM.LLM import load_model, generate_text, unload_model, clear_memory, DEFAULT_SYSTEM_PROMPT
 except ImportError:
@@ -18,6 +19,37 @@ from typing import Optional
 # Load env files — API.env for access keys, AI.env for external API keys
 VALID_API_KEYS = set(dotenv_values(os.path.join('envs', 'API.env')).values())
 load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), 'envs', 'AI.env'))
+
+
+class MediaSocketManager:
+	def __init__(self):
+		self.connections = defaultdict(set)
+
+	async def connect(self, owner: str, websocket: WebSocket):
+		await websocket.accept()
+		self.connections[owner].add(websocket)
+
+	def disconnect(self, owner: str, websocket: WebSocket):
+		if owner in self.connections:
+			self.connections[owner].discard(websocket)
+			if not self.connections[owner]:
+				del self.connections[owner]
+
+	async def push_update(self, owner: str):
+		media = fetch_all_media(owner)
+		payload = {"owner": owner, "media": media}
+		stale = []
+		for websocket in list(self.connections.get(owner, set())):
+			try:
+				await websocket.send_json(payload)
+			except Exception:
+				stale.append(websocket)
+
+		for websocket in stale:
+			self.disconnect(owner, websocket)
+
+
+media_socket_manager = MediaSocketManager()
 
 # Dependency to validate API key
 def validate_api_key(x_api_key: str = Header(...)):
@@ -75,6 +107,7 @@ async def get_media_route(owner: str):
 @app.post("/setmedia/{owner}/{user}/{media:path}")
 async def set_media_route(owner: str, user: str, media: str):
 	store_media(owner, user, media)
+	await media_socket_manager.push_update(owner)
 	return {"message": "Media set successfully."}
       
 @app.get("/getallmedia/{owner}")
@@ -89,6 +122,8 @@ async def get_all_media_route(owner: str):
 async def remove_media_route(owner: str, index: int):
 	success = remove_media(owner, index)
 	if success:
+		await media_socket_manager.push_update(owner)
+	if success:
 		return {"message": "Media removed successfully."}
 	else:
 		return {"message": "Failed to remove media. Check the owner and index."}
@@ -96,20 +131,18 @@ async def remove_media_route(owner: str, index: int):
 # WebSocket route for getallmedia
 @app.websocket("/ws/getallmedia/{owner}")
 async def websocket_get_all_media(websocket: WebSocket, owner: str):
-    await websocket.accept()
-    try:
-        while True:
-            # Wait for a message from the client (optional, can be removed if not needed)
-            await websocket.receive_text()
+	await media_socket_manager.connect(owner, websocket)
+	try:
+		# Send the current state immediately after subscribing.
+		await media_socket_manager.push_update(owner)
 
-            # Fetch all media for the owner
-            response = fetch_all_media(owner)
-            if response:
-                await websocket.send_json({"media": response})
-            else:
-                await websocket.send_json({"message": "No media found for this owner."})
-    except WebSocketDisconnect:
-        print(f"WebSocket disconnected for owner: {owner}")
+		while True:
+			# Keep the socket alive and support manual refresh messages.
+			await websocket.receive_text()
+			await media_socket_manager.push_update(owner)
+	except WebSocketDisconnect:
+		media_socket_manager.disconnect(owner, websocket)
+		print(f"WebSocket disconnected for owner: {owner}")
 
 #LLM integration
 @app.post("/loadmodel")

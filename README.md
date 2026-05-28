@@ -45,6 +45,14 @@ Dabei verändere die Host IP und den Port zu dem gewünschten wert.
 
 - ``/getallmedia/{owener}`` Bekommt alle Medien, die ein besitzer hat, ohne diese zu löschen.
 
+## WebSocket Push Updates
+
+The route ``/ws/getallmedia/{owner}`` is now subscription-based:
+
+- On connect, clients immediately receive the current media list for ``owner``.
+- On every successful ``/setmedia`` and ``/removemedia`` for that ``owner``, all subscribed websocket clients receive an updated ``{"owner": owner, "media": [...]}`` payload automatically.
+- Clients can still send any text message to request a manual refresh.
+
 # LLM
 
 - ``/loadmodel`` Läd das LLama model "meta-llama/Meta-Llama-3.1-8B-Instruct"
