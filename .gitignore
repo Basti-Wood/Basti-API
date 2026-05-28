@@ -3,3 +3,4 @@ envs/LLM.env
 main.py
 envs/AI.env
 /envs
+Media_share/media.json
