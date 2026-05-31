@@ -23,7 +23,7 @@ def get_media(owner):
 
     requests = data.get(owner, {}).get("requests", [])
     if requests:
-        ret = requests.pop(0)
+        ret = requests[0]
         with open(MEDIA_FILE, "w") as f:
             data.setdefault(owner, {})["requests"] = requests
             json.dump(data, f, indent=4)
