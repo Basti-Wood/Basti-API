@@ -72,6 +72,51 @@ def set_media(owner, user, media):
 		json.dump(data, f, indent=4)
 
 
+def set_media_top(owner, user, media):
+	# Same as set_media, but inserts at the FRONT of the queue (index 0).
+	# Used for owner songs pushed from the Mediashare site so they play next
+	# and sit in the top row for the Twitch bot. The owner marker is carried in
+	# `user` (the Mediashare site sends "US<channel>").
+	try:
+		with open(MEDIA_FILE, "r") as f:
+			data = json.load(f)
+	except FileNotFoundError:
+		data = {}
+
+	if owner not in data:
+		data[owner] = {"requests": []}
+
+	platform = "unknown"
+	name = "Unknown"
+	if(media.find("yout") != -1):
+		platform = "youtube"
+	elif(media.find("spot") != -1):
+		platform = "spotify"
+
+	if(platform == "youtube"):
+		video_id = media.split("v=")[-1].split("&")[0] if "v=" in media else media.split("/")[-1] if "/" in media else media
+		api_url = f"https://www.googleapis.com/youtube/v3/videos?part=snippet&id={video_id}&key={YOUTUBE_API_KEY}"
+		response = requests.get(api_url)
+		if response.status_code == 200:
+			data_json = response.json()
+			if data_json["items"]:
+				name = data_json["items"][0]["snippet"]["title"]
+			else:
+				name = "Unknown YouTube Video"
+		else:
+			name = "Unknown YouTube Video"
+
+	data[owner]["requests"].insert(0, {
+		"Platform": platform,
+		"song_name": name,
+		"username": user,
+		"media": media,
+		"owner_song": True
+	})
+	with open(MEDIA_FILE, "w") as f:
+		json.dump(data, f, indent=4)
+
+
 def get_all_media(owner):
     try:
         with open(MEDIA_FILE, "r") as f:

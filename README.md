@@ -43,6 +43,8 @@ Dabei verändere die Host IP und den Port zu dem gewünschten wert.
 
 - ``/setmedia/{owner}/{user}/{Media}`` Setzt Media für einen besitzer der liste von einem Benutzer.
 
+- ``/setmediatop/{owner}/{user}/{Media}`` Wie ``/setmedia``, fügt das Media aber an den ANFANG der liste (index 0) ein. Wird von der Mediashare-Seite für eigene Songs benutzt. Der ``user`` trägt die Markierung ``US<channel>`` und der eintrag bekommt ``owner_song: true``.
+
 - ``/getallmedia/{owener}`` Bekommt alle Medien, die ein besitzer hat, ohne diese zu löschen.
 
 ## WebSocket Push Updates

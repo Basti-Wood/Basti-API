@@ -5,6 +5,7 @@ from Reactions.gifpicker import get_gif, set_gif
 from Media_share.mediashare import (
 	get_media as fetch_media,
 	set_media as store_media,
+	set_media_top as store_media_top,
 	get_all_media as fetch_all_media,
 	remove_media as remove_media
 )
@@ -109,6 +110,13 @@ async def set_media_route(owner: str, user: str, media: str):
 	store_media(owner, user, media)
 	await media_socket_manager.push_update(owner)
 	return {"message": "Media set successfully."}
+
+@app.post("/setmediatop/{owner}/{user}/{media:path}")
+async def set_media_top_route(owner: str, user: str, media: str):
+	# Insert at the FRONT of the queue (owner songs from the Mediashare site).
+	store_media_top(owner, user, media)
+	await media_socket_manager.push_update(owner)
+	return {"message": "Media set at top successfully."}
       
 @app.get("/getallmedia/{owner}")
 async def get_all_media_route(owner: str):
