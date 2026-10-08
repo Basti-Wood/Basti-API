@@ -1,13 +1,34 @@
 # -*- coding: utf-8 -*-
-from llama_cpp import Llama
-from huggingface_hub import hf_hub_download
-from dotenv import load_dotenv, dotenv_values
+"""FreeLLMAPI client.
+
+The local llama.cpp model has been replaced with FreeLLMAPI
+(https://github.com/tashfeenahmed/freellmapi), an OpenAI-compatible router
+that aggregates free LLM providers. The AI is therefore always available:
+there is nothing to load or unload locally.
+"""
 import os
 import json
+
+import requests
+from dotenv import load_dotenv, dotenv_values
 
 _ENV_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'envs', 'AI.env'))
 _MEMORY_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'LLM', 'memory.json'))
 load_dotenv(dotenv_path=_ENV_PATH)
+
+
+def _config() -> dict:
+    """Resolve FreeLLMAPI settings from the environment (or envs/AI.env)."""
+    values = dict(os.environ)
+    try:
+        values.update(dotenv_values(_ENV_PATH))
+    except Exception:
+        pass
+    return {
+        "base_url": (values.get("FREELLMAPI_BASE_URL") or "http://freellmapi:3001/v1").rstrip("/"),
+        "api_key": values.get("FREELLMAPI_API_KEY") or values.get("freellmapi") or "",
+        "model": values.get("FREELLMAPI_MODEL") or "auto",
+    }
 
 DEFAULT_SYSTEM_PROMPT = """
 Du bist ein echter Mensch mit eigener Persoenlichkeit, eigenen Meinungen und natuerlicher Ausdrucksweise.
@@ -50,22 +71,14 @@ def clear_memory(user: str = None):
         memory = {}
     _save_memory(memory)
 
-def load_model(repo_id, filename="Llama-3.2-3B-Instruct-Q4_K_M.gguf"):
-    hf_token = dotenv_values(_ENV_PATH).get("hf") or os.getenv("hf") or None
-    model_path = hf_hub_download(repo_id=repo_id, filename=filename, token=hf_token)
-    model = Llama(
-        model_path=model_path,
-        n_gpu_layers=-1,
-        n_ctx=4096,
-        chat_format="llama-3",
-        verbose=False,
-    )
-    return model, None
 
-def unload_model(model, tokenizer=None):
-    del model
+def generate_text(input_text, system_prompt=None, max_new_tokens=512, user="default"):
+    cfg = _config()
+    if not cfg["api_key"]:
+        raise RuntimeError(
+            "FREELLMAPI_API_KEY is not set. Add it to .env (or envs/AI.env) and restart the API."
+        )
 
-def generate_text(model, tokenizer, input_text, system_prompt=None, max_new_tokens=512, user="default"):
     active_prompt = system_prompt or DEFAULT_SYSTEM_PROMPT
     enforced_prompt = (
         f"{active_prompt}\n\n"
@@ -80,14 +93,27 @@ def generate_text(model, tokenizer, input_text, system_prompt=None, max_new_toke
     messages.extend(history)
     messages.append({"role": "user", "content": input_text})
 
-    response = model.create_chat_completion(
-        messages=messages,
-        max_tokens=max_new_tokens,
-        temperature=0.7,
-        top_p=0.9,
-        repeat_penalty=1.15,
-    )
-    reply = response["choices"][0]["message"]["content"]
+    try:
+        response = requests.post(
+            f"{cfg['base_url']}/chat/completions",
+            headers={
+                "Authorization": f"Bearer {cfg['api_key']}",
+                "Content-Type": "application/json",
+            },
+            json={
+                "model": cfg["model"],
+                "messages": messages,
+                "max_tokens": max_new_tokens,
+                "temperature": 0.7,
+            },
+            timeout=180,
+        )
+        response.raise_for_status()
+    except requests.RequestException as exc:
+        raise RuntimeError(f"FreeLLMAPI request failed: {exc}") from exc
+
+    data = response.json()
+    reply = data["choices"][0]["message"]["content"]
 
     history.append({"role": "user", "content": input_text})
     history.append({"role": "assistant", "content": reply})

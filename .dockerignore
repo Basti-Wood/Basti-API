@@ -1,0 +1,15 @@
+.git
+.gitignore
+.dist
+__pycache__
+**/__pycache__
+*.pyc
+.env
+.env.example
+envs/
+*.db
+*.sqlite
+.dockerignore
+Dockerfile
+docker-compose.yml
+README.md

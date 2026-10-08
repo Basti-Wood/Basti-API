@@ -1,0 +1,52 @@
+services:
+  # The Basti FastAPI application.
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: basti-api
+    env_file:
+      - .env
+    ports:
+      - "${API_PORT:-8000}:8000"
+    # The mutable JSON data files are bind-mounted so state survives
+    # container restarts and stays in the repo for local development.
+    volumes:
+      - ./LLM/memory.json:/app/LLM/memory.json
+      - ./Media_share/media.json:/app/Media_share/media.json
+      - ./Reactions/gifs.json:/app/Reactions/gifs.json
+    depends_on:
+      - freellmapi
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import socket; socket.create_connection(('127.0.0.1', 8000), 2)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+  # FreeLLMAPI - an OpenAI-compatible router over free LLM providers.
+  # Replaces the local llama.cpp model so the AI is always available.
+  freellmapi:
+    image: ghcr.io/tashfeenahmed/freellmapi:latest
+    container_name: freellmapi
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      ENCRYPTION_KEY: ${FREELLMAPI_ENCRYPTION_KEY:?FREELLMAPI_ENCRYPTION_KEY must be set in .env}
+    ports:
+      - "${FREELLMAPI_HOST_BIND:-127.0.0.1}:${FREELLMAPI_PORT:-3001}:3001"
+    volumes:
+      - freellmapi-data:/app/server/data
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3001/api/ping').then((res) => { if (!res.ok) process.exit(1); }).catch(() => process.exit(1));"]
+      interval: 30s
+      timeout: 5s
+      start_period: 15s
+      retries: 3
+
+volumes:
+  freellmapi-data:

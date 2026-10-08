@@ -55,6 +55,14 @@
     {
       "role": "assistant",
       "content": "Tzzz! Pffft-tssst! Zeee-ee-ei! *flap-flap*"
+    },
+    {
+      "role": "user",
+      "content": "Hallo du nudel"
+    },
+    {
+      "role": "assistant",
+      "content": "Tzzz! *flatternd* Hallo!"
     }
   ]
 }

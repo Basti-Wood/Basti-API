@@ -7,9 +7,13 @@ import requests
 env_path = os.path.join('envs', 'media.env')
 load_dotenv(dotenv_path=env_path)
 
-YOUTUBE_API_KEY = os.getenv("YTAPI")
-if not YOUTUBE_API_KEY:
-    raise ValueError("YouTube API key is missing. Please check your 'media.env' file.")
+
+def _youtube_api_key() -> str:
+    key = os.getenv("YTAPI")
+    if not key:
+        raise ValueError("YouTube API key is missing. Set YTAPI in envs/media.env or in the environment.")
+    return key
+
 
 MEDIA_FILE = Path(__file__).resolve().parent / "media.json"
 
@@ -51,7 +55,7 @@ def set_media(owner, user, media):
     
 	if(platform == "youtube"):
 		video_id = media.split("v=")[-1].split("&")[0] if "v=" in media else media.split("/")[-1] if "/" in media else media
-		api_url = f"https://www.googleapis.com/youtube/v3/videos?part=snippet&id={video_id}&key={YOUTUBE_API_KEY}"
+		api_url = f"https://www.googleapis.com/youtube/v3/videos?part=snippet&id={video_id}&key={_youtube_api_key()}"
 		response = requests.get(api_url)
 		if response.status_code == 200:
 			data_json = response.json()
@@ -95,7 +99,7 @@ def set_media_top(owner, user, media):
 
 	if(platform == "youtube"):
 		video_id = media.split("v=")[-1].split("&")[0] if "v=" in media else media.split("/")[-1] if "/" in media else media
-		api_url = f"https://www.googleapis.com/youtube/v3/videos?part=snippet&id={video_id}&key={YOUTUBE_API_KEY}"
+		api_url = f"https://www.googleapis.com/youtube/v3/videos?part=snippet&id={video_id}&key={_youtube_api_key()}"
 		response = requests.get(api_url)
 		if response.status_code == 200:
 			data_json = response.json()

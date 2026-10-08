@@ -12,13 +12,19 @@ from Media_share.mediashare import (
 from dotenv import load_dotenv, dotenv_values
 from collections import defaultdict
 try:
-	from LLM.LLM import load_model, generate_text, unload_model, clear_memory, DEFAULT_SYSTEM_PROMPT
+	from LLM.LLM import generate_text, clear_memory, DEFAULT_SYSTEM_PROMPT
 except ImportError:
 	print("LLM module not found. LLM-related routes will not work.")
 from typing import Optional
 
 # Load env files — API.env for access keys, AI.env for external API keys
-VALID_API_KEYS = set(dotenv_values(os.path.join('envs', 'API.env')).values())
+def _load_api_keys() -> set:
+	env_keys = os.getenv("API_KEYS", "").strip()
+	if env_keys:
+		return {key.strip() for key in env_keys.split(",") if key.strip()}
+	return set(dotenv_values(os.path.join('envs', 'API.env')).values())
+
+VALID_API_KEYS = _load_api_keys()
 load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), 'envs', 'AI.env'))
 
 
@@ -57,16 +63,9 @@ def validate_api_key(x_api_key: str = Header(...)):
     if x_api_key not in VALID_API_KEYS:
         raise HTTPException(status_code=401, detail="Invalid API Key")
 
-# Global model state — loaded/unloaded manually via routes
-_model = None
-_tokenizer = None
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     yield
-    # Runs on shutdown — unload model if still loaded
-    if _model is not None:
-        unload_model(_model, _tokenizer)
 
 app = FastAPI(dependencies=[Depends(validate_api_key)], lifespan=lifespan)
 
@@ -152,21 +151,13 @@ async def websocket_get_all_media(websocket: WebSocket, owner: str):
 		media_socket_manager.disconnect(owner, websocket)
 		print(f"WebSocket disconnected for owner: {owner}")
 
-#LLM integration
-@app.post("/loadmodel")
-async def load_model_route():
-	global _model, _tokenizer
-	if _model is not None:
-		return {"message": "Model is already loaded."}
-	model_path = "bartowski/Llama-3.2-3B-Instruct-GGUF"
-	_model, _tokenizer = load_model(model_path)
-	return {"message": "Model loaded successfully."}
-
+# LLM integration — powered by FreeLLMAPI (always available).
 @app.get("/generatetext")
 async def generate_text_route(input_text: str, user: str = "default", system_prompt: Optional[str] = None):
-	if _model is None:
-		raise HTTPException(status_code=503, detail="Model is not loaded. Call /loadmodel first.")
-	generated_text = generate_text(_model, _tokenizer, input_text, system_prompt=system_prompt, user=user)
+	try:
+		generated_text = generate_text(input_text, system_prompt=system_prompt, user=user)
+	except RuntimeError as exc:
+		raise HTTPException(status_code=503, detail=str(exc))
 	return {"generated_text": generated_text}
 
 @app.post("/clearmemory")
@@ -175,15 +166,5 @@ async def clear_memory_route(user: Optional[str] = None):
 	if user:
 		return {"message": f"Memory cleared for user '{user}'."}
 	return {"message": "All memory cleared."}
-
-@app.post("/unloadmodel")
-async def unload_model_route():
-	global _model, _tokenizer
-	if _model is None:
-		return {"message": "Model is not loaded."}
-	unload_model(_model, _tokenizer)
-	_model = None
-	_tokenizer = None
-	return {"message": "Model unloaded successfully."}
 
 
