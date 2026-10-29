@@ -3,6 +3,7 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 import requests
+from urllib.parse import unquote, urlsplit
 
 env_path = os.path.join('envs', 'media.env')
 load_dotenv(dotenv_path=env_path)
@@ -35,90 +36,53 @@ def get_media(owner):
     else:
         return None 
 
-def set_media(owner, user, media):
-	try:
-		with open(MEDIA_FILE, "r") as f:
-			data = json.load(f)
-	except FileNotFoundError:
-		data = {}
-
-	if owner not in data:
-		data[owner] = {"requests": []}#
-        
-	
-	platform = "unknown"
-	name = "Unknown"
-	if(media.find("yout") != -1):
-		platform = "youtube"
-	elif(media.find("spot") != -1):
-		platform = "spotify"
-    
-	if(platform == "youtube"):
-		video_id = media.split("v=")[-1].split("&")[0] if "v=" in media else media.split("/")[-1] if "/" in media else media
-		api_url = f"https://www.googleapis.com/youtube/v3/videos?part=snippet&id={video_id}&key={_youtube_api_key()}"
-		response = requests.get(api_url)
-		if response.status_code == 200:
-			data_json = response.json()
-			if data_json["items"]:
-				name = data_json["items"][0]["snippet"]["title"]
-			else:
-				name = "Unknown YouTube Video"
-		else:
-			name = "Unknown YouTube Video"
-
-	data[owner]["requests"].append({
-		"Platform": platform,
-        "song_name": name,
-		"username": user,
-		"media": media
-	})
-	with open(MEDIA_FILE, "w") as f:
-		json.dump(data, f, indent=4)
+def _media_metadata(media, song_name=None, platform=None):
+    media_path = urlsplit(media).path
+    detected = "local" if media_path.startswith("/api/local-media/") else (
+        "youtube" if "yout" in media else "spotify" if "spot" in media else "unknown"
+    )
+    platform = platform if platform in {"local", "youtube", "spotify", "other", "unknown"} else detected
+    name = (song_name or "").strip()
+    if not name and platform == "local":
+        name = unquote(media_path.rsplit("/", 1)[-1])
+    if not name and platform == "youtube":
+        video_id = media.split("v=")[-1].split("&")[0] if "v=" in media else media.rstrip("/").split("/")[-1]
+        api_url = f"https://www.googleapis.com/youtube/v3/videos?part=snippet&id={video_id}&key={_youtube_api_key()}"
+        response = requests.get(api_url)
+        name = "Unknown YouTube Video"
+        if response.status_code == 200:
+            items = response.json().get("items", [])
+            if items:
+                name = items[0]["snippet"]["title"]
+    return platform, name or "Unknown"
 
 
-def set_media_top(owner, user, media):
-	# Same as set_media, but inserts at the FRONT of the queue (index 0).
-	# Used for owner songs pushed from the Mediashare site so they play next
-	# and sit in the top row for the Twitch bot. The owner marker is carried in
-	# `user` (the Mediashare site sends "US<channel>").
-	try:
-		with open(MEDIA_FILE, "r") as f:
-			data = json.load(f)
-	except FileNotFoundError:
-		data = {}
+def _store_media(owner, user, media, song_name=None, platform=None, at_top=False):
+    try:
+        with open(MEDIA_FILE, "r") as f:
+            data = json.load(f)
+    except FileNotFoundError:
+        data = {}
+    data.setdefault(owner, {"requests": []})
+    resolved_platform, name = _media_metadata(media, song_name, platform)
+    entry = {"Platform": resolved_platform, "song_name": name, "username": user, "media": media}
+    if at_top:
+        entry["owner_song"] = True
+        data[owner]["requests"].insert(0, entry)
+    else:
+        data[owner]["requests"].append(entry)
+    with open(MEDIA_FILE, "w") as f:
+        json.dump(data, f, indent=4)
 
-	if owner not in data:
-		data[owner] = {"requests": []}
 
-	platform = "unknown"
-	name = "Unknown"
-	if(media.find("yout") != -1):
-		platform = "youtube"
-	elif(media.find("spot") != -1):
-		platform = "spotify"
+def set_media(owner, user, media, song_name=None, platform=None):
+    _store_media(owner, user, media, song_name, platform)
 
-	if(platform == "youtube"):
-		video_id = media.split("v=")[-1].split("&")[0] if "v=" in media else media.split("/")[-1] if "/" in media else media
-		api_url = f"https://www.googleapis.com/youtube/v3/videos?part=snippet&id={video_id}&key={_youtube_api_key()}"
-		response = requests.get(api_url)
-		if response.status_code == 200:
-			data_json = response.json()
-			if data_json["items"]:
-				name = data_json["items"][0]["snippet"]["title"]
-			else:
-				name = "Unknown YouTube Video"
-		else:
-			name = "Unknown YouTube Video"
 
-	data[owner]["requests"].insert(0, {
-		"Platform": platform,
-		"song_name": name,
-		"username": user,
-		"media": media,
-		"owner_song": True
-	})
-	with open(MEDIA_FILE, "w") as f:
-		json.dump(data, f, indent=4)
+def set_media_top(owner, user, media, song_name=None, platform=None):
+    # Existing three-argument callers remain supported. Metadata from the site
+    # is saved before the route broadcasts the updated queue to bot clients.
+    _store_media(owner, user, media, song_name, platform, at_top=True)
 
 
 def get_all_media(owner):
@@ -146,3 +110,4 @@ def remove_media(owner, index):
 		return True
 	else:
 		return False
+

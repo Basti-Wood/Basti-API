@@ -74,6 +74,16 @@ wie oben über Umgebungsvariablen (oder weiterhin über die `envs/*.env`-Dateien
 
 - ``/getallmedia/{owener}`` Bekommt alle Medien, die ein besitzer hat, ohne diese zu löschen.
 
+Both media submission routes also accept optional query parameters `song_name`
+and `platform`. The Mediashare site sends the uploaded filename as `song_name`
+and `local` as `platform`; `/getallmedia` and WebSocket updates then include the
+correct name instead of `Unknown`. Existing clients can omit both parameters.
+Local `/api/local-media/...` links also fall back to their decoded filename.
+Provided YouTube titles are retained without another YouTube metadata lookup.
+
+Run the metadata regression tests with `python -m unittest discover -s tests`.
+They use temporary queue files and fake external services.
+
 ## WebSocket Push Updates
 
 The route ``/ws/getallmedia/{owner}`` is now subscription-based:
@@ -91,3 +101,4 @@ Modell muss nicht mehr geladen oder entladen werden, die KI ist immer verfügbar
 - ``/generatetext?input_text=...`` generiert Text. Optional: ``system_prompt`` und ``user``.
 
 - ``/clearmemory`` löscht den Chat-Verlauf (für einen ``user`` oder alle).
+
