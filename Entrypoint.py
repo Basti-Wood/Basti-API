@@ -105,15 +105,15 @@ async def get_media_route(owner: str):
 		return {"message": "No media found for this owner."}
       
 @app.post("/setmedia/{owner}/{user}/{media:path}")
-async def set_media_route(owner: str, user: str, media: str):
-	store_media(owner, user, media)
+async def set_media_route(owner: str, user: str, media: str, song_name: Optional[str] = None, platform: Optional[str] = None):
+	store_media(owner, user, media, song_name=song_name, platform=platform)
 	await media_socket_manager.push_update(owner)
 	return {"message": "Media set successfully."}
 
 @app.post("/setmediatop/{owner}/{user}/{media:path}")
-async def set_media_top_route(owner: str, user: str, media: str):
+async def set_media_top_route(owner: str, user: str, media: str, song_name: Optional[str] = None, platform: Optional[str] = None):
 	# Insert at the FRONT of the queue (owner songs from the Mediashare site).
-	store_media_top(owner, user, media)
+	store_media_top(owner, user, media, song_name=song_name, platform=platform)
 	await media_socket_manager.push_update(owner)
 	return {"message": "Media set at top successfully."}
       
@@ -166,5 +166,6 @@ async def clear_memory_route(user: Optional[str] = None):
 	if user:
 		return {"message": f"Memory cleared for user '{user}'."}
 	return {"message": "All memory cleared."}
+
 
 
